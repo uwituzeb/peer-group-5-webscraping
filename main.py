@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import time
 
 def scrape_ebay(searchquery, num_pages=1):
     url = 'https://www.ebay.com/sch/i.html?_nkw='
@@ -29,6 +30,8 @@ def scrape_ebay(searchquery, num_pages=1):
             })
 
             print(f'Title: {title}\n - Price: {price}\n - Link: {link}\n')
+        
+        time.sleep(1)
 
     return products
 
@@ -36,4 +39,8 @@ search_query = "car"
 
 products = scrape_ebay(search_query, num_pages=3)
 df = pd.DataFrame(products)
-df.to_csv('ebay_cars.csv')
+
+# filter out shop on ebay ad
+df = df[df['title'] != 'Shop on eBay']
+
+df.to_csv('ebay_cars.csv', index=False)
